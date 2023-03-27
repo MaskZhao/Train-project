@@ -1,0 +1,4 @@
+ID;name;oldstatus;newstatus;changereason;reason_code
+d002;coke;intransit;received;test;99
+f003;banana;received;done;test;77
+t002;doll;unshipped;intransit;test;55

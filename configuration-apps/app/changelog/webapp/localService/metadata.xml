@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/HTML5.xml">
+        <edmx:Include Alias="HTML5" Namespace="com.sap.vocabularies.HTML5.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="mailService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="mail" EntityType="mailService.mail">
+                    <NavigationPropertyBinding Path="changelog" Target="changeLog"/>
+                </EntitySet>
+                <EntitySet Name="changeLog" EntityType="mailService.changeLog"/>
+            </EntityContainer>
+            <EntityType Name="mail">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String"/>
+                <Property Name="reciever" Type="Edm.String"/>
+                <Property Name="status" Type="Edm.String"/>
+                <Property Name="amount" Type="Edm.Int32"/>
+                <Property Name="critification" Type="Edm.Int32"/>
+                <NavigationProperty Name="changelog" Type="Collection(mailService.changeLog)"/>
+            </EntityType>
+            <EntityType Name="changeLog">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String"/>
+                <Property Name="oldstatus" Type="Edm.String"/>
+                <Property Name="newstatus" Type="Edm.String"/>
+                <Property Name="changereason" Type="Edm.String"/>
+                <Property Name="reason_code" Type="Edm.Int32"/>
+            </EntityType>
+            <Annotations Target="mailService.mail">
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="Mail"/>
+                        <PropertyValue Property="TypeNamePlural" String="Mail"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="ID"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="name"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#HeaderAdminData"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Status"/>
+                            <PropertyValue Property="Label" String="Status"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>reciever</PropertyPath>
+                        <PropertyPath>status</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ID"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="reciever"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="status"/>
+                            <PropertyValue Property="Criticality" Path="critification"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="amount"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="modifiedAt"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="modifiedBy"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="createdAt"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="createdBy"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Mail"/>
+                            <PropertyValue Property="Label" String="MailStatus"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="ChangeLog"/>
+                            <PropertyValue Property="Target" AnnotationPath="changelog/@UI.PresentationVariant"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Mail">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="ID"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="reciever"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="status"/>
+                                    <PropertyValue Property="Criticality" Path="critification"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="amount"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="HeaderAdminData">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="createdAt"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="createdBy"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="modifiedAt"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="modifiedBy"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Status">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="status"/>
+                                    <PropertyValue Property="Criticality" Path="critification"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="mailService.mail/createdAt">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                </Annotations>
+                <Annotations Target="mailService.mail/createdBy">
+                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                    <Annotation Term="Core.Immutable" Bool="true"/>
+                    <Annotation Term="Core.Computed" Bool="true"/>
+                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                        </Annotations>
+                        <Annotations Target="mailService.mail/modifiedAt">
+                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                            <Annotation Term="Core.Computed" Bool="true"/>
+                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                            </Annotations>
+                            <Annotations Target="mailService.mail/modifiedBy">
+                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                <Annotation Term="Core.Computed" Bool="true"/>
+                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.mail/ID">
+                                        <Annotation Term="Common.Label" String="Label"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.mail/name">
+                                        <Annotation Term="Common.Label" String="Name"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.mail/reciever">
+                                        <Annotation Term="Common.Label" String="Reciever"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.mail/status">
+                                        <Annotation Term="Common.Label" String="Status"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.mail/amount">
+                                        <Annotation Term="Common.Label" String="Amount"/>
+                                    </Annotations>
+                                    <Annotations Target="mailService.changeLog">
+                                        <Annotation Term="UI.HeaderInfo">
+                                            <Record Type="UI.HeaderInfoType">
+                                                <PropertyValue Property="TypeName" String="ChangeLog"/>
+                                                <PropertyValue Property="TypeNamePlural" String="Items"/>
+                                            </Record>
+                                        </Annotation>
+                                        <Annotation Term="UI.LineItem">
+                                            <Collection>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="ID"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="name"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="oldstatus"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="newstatus"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="changereason"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="reason_code"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="modifiedAt"/>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="modifiedBy"/>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="createdAt"/>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="createdBy"/>
+                                                </Record>
+                                            </Collection>
+                                        </Annotation>
+                                        <Annotation Term="UI.PresentationVariant">
+                                            <Record Type="UI.PresentationVariantType">
+                                                <PropertyValue Property="SortOrder">
+                                                    <Collection>
+                                                        <Record Type="Common.SortOrderType">
+                                                            <PropertyValue Property="Property" PropertyPath="reason_code"/>
+                                                            <PropertyValue Property="Descending" Bool="true"/>
+                                                        </Record>
+                                                    </Collection>
+                                                </PropertyValue>
+                                                <PropertyValue Property="Visualizations">
+                                                    <Collection>
+                                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                                    </Collection>
+                                                </PropertyValue>
+                                            </Record>
+                                        </Annotation>
+                                    </Annotations>
+                                    <Annotations Target="mailService.EntityContainer/changeLog">
+                                        <Annotation Term="UI.PresentationVariant">
+                                            <Record Type="UI.PresentationVariantType">
+                                                <PropertyValue Property="SortOrder">
+                                                    <Collection>
+                                                        <Record Type="Common.SortOrderType">
+                                                            <PropertyValue Property="Property" PropertyPath="reason_code"/>
+                                                            <PropertyValue Property="Descending" Bool="true"/>
+                                                        </Record>
+                                                    </Collection>
+                                                </PropertyValue>
+                                                <PropertyValue Property="Visualizations">
+                                                    <Collection>
+                                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                                    </Collection>
+                                                </PropertyValue>
+                                            </Record>
+                                        </Annotation>
+                                    </Annotations>
+                                    <Annotations Target="mailService.changeLog/createdAt">
+                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                        </Annotations>
+                                        <Annotations Target="mailService.changeLog/createdBy">
+                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                </Annotations>
+                                                <Annotations Target="mailService.changeLog/modifiedAt">
+                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                    </Annotations>
+                                                    <Annotations Target="mailService.changeLog/modifiedBy">
+                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/ID">
+                                                                <Annotation Term="Common.Label" String="Label"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/name">
+                                                                <Annotation Term="Common.Label" String="Name"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/oldstatus">
+                                                                <Annotation Term="Common.Label" String="OldStatus"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/newstatus">
+                                                                <Annotation Term="Common.Label" String="NewStatus"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/changereason">
+                                                                <Annotation Term="Common.Label" String="ChangeReason"/>
+                                                            </Annotations>
+                                                            <Annotations Target="mailService.changeLog/reason_code">
+                                                                <Annotation Term="Common.Label" String="Reason_Code"/>
+                                                            </Annotations>
+                                                        </Schema>
+                                                    </edmx:DataServices>
+                                                </edmx:Edmx>
