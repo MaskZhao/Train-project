@@ -1,0 +1,12 @@
+ID;name;receiver;status;amount
+d001;wangzai;Eliza;unshipped;50
+d002;coke;Susiks;intransit;60
+d003;juice;Tyler;received;10
+f001;oranger;Mask;intransit;20
+f003;banana;Dennys;received;10
+f004;lemon;Stars;unshipped;30
+t002;doll;Dean;unshipped;500
+v002;onion;Mask;intransit;30
+v003;potato;Dennys;intransit;60
+s002;jelly;Eliza;unshipped;45
+s005;cheese;Frank;received;60

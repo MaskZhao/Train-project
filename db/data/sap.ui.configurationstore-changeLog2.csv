@@ -1,0 +1,9 @@
+ID;attribute;action;oldvalue;newvalue;datatime
+d001;drink;wangzai;100;50;100
+d002;drink;coke;50;50;3
+d003;drink;juice;130;50;5
+f001;fruit;orange;45;50;6
+f002;fruit;apple;20;50;70
+f003;fruit;banana;9;50;9
+f004;fruit;lemon;22;50;20
+f005;fruit;strawberry;1000;50;10
