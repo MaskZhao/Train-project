@@ -1,14 +1,14 @@
-using StoreService from './store-service';
+using storeService from './store-service';
 
 
-annotate StoreService.Store with {
+annotate storeService.store with {
     ID       @title: 'ID';
     category @title: 'Category';
     name     @title: 'Name';
     storage  @title: 'Storage';
 }
 
-annotate StoreService.changeLog2 with {
+annotate storeService.changeLog2 with {
     ID        @title: 'ID';
     attribute @title: 'Category';
     action    @title: 'Name';
@@ -17,7 +17,7 @@ annotate StoreService.changeLog2 with {
 // datatime  @title: 'Datatime';
 };
 
-annotate StoreService.Store with @(
+annotate storeService.store with @(
     UI: {
     HeaderInfo                 : {
         TypeName      : 'Store',
@@ -107,7 +107,7 @@ annotate StoreService.Store with @(
     ]}
 }, );
 
-annotate StoreService.changeLog2 with @(
+annotate storeService.changeLog2 with @(
     UI: {
     HeaderInfo         : {
         $Type         : 'UI.HeaderInfoType',

@@ -11,6 +11,7 @@ entity mail : managed {
     changelog : Association to  many changeLog on changelog.ID=ID;
 }
 
+
 entity changeLog : managed {
     key ID : String;
     name   : String;
@@ -20,7 +21,7 @@ entity changeLog : managed {
     reason_code : Integer;
 }
 
-entity Store : managed {
+entity store : managed {
     key ID      : String;
     category    : String;
     name        : String;
