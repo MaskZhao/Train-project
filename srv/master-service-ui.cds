@@ -9,12 +9,14 @@ annotate masterService.mail with {
     amount           @title : 'Amount';
     @Common: {Text: receiver,}
     ID;
-    amount;
+
 };
 
 annotate masterService.store with {
     name     @title : 'Name';
     storage  @title : 'Storage';
+    criticality @title : 'Criticality';
+
     @Common: {Text: category, }
     ID
 }
@@ -39,10 +41,28 @@ annotate masterService.mail with @(
 
 };
 
+annotate masterService.store with @(
+    Capabilities.DeleteRestrictions : {
+        Deletable : false
+    },
+    Capabilities.UpdateRestrictions : {
+        Updatable : true
+    },
+    Capabilities.InsertRestrictions : {
+        Insertable : true
+    },
+){
+
+};
+
 annotate masterService.master with actions {
  nextStatus @(
-   Common.SideEffects.TargetEntities : ['in/mail'],
-) };
+    Common.SideEffects.TargetEntities : ['in/mail'],
+);
+ newStorage @(
+    Common.SideEffects.TargetEntities : ['in/store'],
+)
+};
 
 annotate masterService.master with @(
     Capabilities : {
@@ -57,6 +77,13 @@ annotate masterService.master with @(
                 $Type : 'UI.DataFieldForAction',
                 Label : 'Next Status',
                 Action : 'masterService.nextStatus',
+                ![@UI.Importance] : #High,
+                Criticality : #Positive
+            },
+            {
+                $Type : 'UI.DataFieldForAction',
+                Label : 'New Storage',
+                Action : 'masterService.newStorage',
                 ![@UI.Importance] : #High,
                 Criticality : #Positive
             }
@@ -125,7 +152,6 @@ annotate masterService.master with @(
             {
                 Value : store.storage,
                 Criticality : store.criticality ,
-                ![@UI.Hidden] ,
             },
             {Value : createdAt},
             {Value : createdBy},
@@ -186,6 +212,10 @@ annotate masterService.master with @(
                     Value: mail.status,
                     Criticality:mail.critification,
                 },
+                {
+                    Value : store.storage,
+                    Criticality : store.criticality,
+                },
             ],
         },
         FieldGroup #MailInfor : {
@@ -237,7 +267,7 @@ annotate masterService.master with @(
             },
             {
                 Value : store.storage,
-                Criticality : store.criticality ,
+                Criticality : store.criticality,
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
         ],
@@ -323,7 +353,7 @@ annotate masterService.master with @(
         {
           $Type             : 'Common.ValueListParameterDisplayOnly',
           ValueListProperty : 'category'
-        }
+        },
       ]
     }
   }

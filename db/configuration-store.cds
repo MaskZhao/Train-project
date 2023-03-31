@@ -1,6 +1,6 @@
 namespace sap.ui.configurationstore;
 
-using { managed } from '@sap/cds/common';
+using { managed,cuid } from '@sap/cds/common';
 using { sap.ui.masterstore.master as master } from './master-store';
 entity mail : managed {
     key ID : String;
@@ -9,21 +9,17 @@ entity mail : managed {
     status : String;
     amount : Integer;
     critification: Integer;
-    changelog : Association to  many changeLog on changelog.mail_ID= ID ;
+    changelog : Association to  many changeLog on changelog.mail= $self ;
 }
 
-
-entity changeLog : managed {
-    key ID : String;
+entity changeLog : managed ,cuid {
     name   : String;
     oldstatus: String;
     newstatus : String;
     changereason : String;
     reason_code : Integer;
-    mail : Association to  one mail on mail.ID= mail_ID ;
-    master : Association to  one master on master.ID= master_ID ;
-    mail_ID     : String;
-    master_ID  :  String;
+    mail     : Association to mail;
+    master  :  Association to master;
   }
 
 entity store : managed {
@@ -35,11 +31,11 @@ entity store : managed {
     changeLog2 : Association to  many changeLog2 on changeLog2.attribute=category;
   }
 
-entity changeLog2 : managed {
-    key ID      : String;
+entity changeLog2 : managed ,cuid{
     attribute    : String;
     action        : String;
     oldvalue      : Integer;
     newvalue      : Integer;
     datatime      : Integer; 
+    store         :Association to one store on store.category=attribute;
   }

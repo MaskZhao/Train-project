@@ -13,7 +13,7 @@ entity master : managed {
     key ID : String;
     name   : String;
     mail   : Association to one mail ;
-    changeLog : Association to many changeLog on changeLog.master_ID = ID;
+    changeLog : Association to many changeLog on changeLog.master = $self;
     store     : Association to one store;
     country   : Association to one mailCountry;
 };

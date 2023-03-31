@@ -15,7 +15,8 @@ module.exports = cds.service.impl(
                 }else {
                     m.mail.critification = 3;
                 }
-
+                await UPDATE(this.entities.mail,m.mail.ID).with({critification: m.mail.critification});
+                
                 if (m.store.storage <= 20) {
                     m.store.criticality = 1;
                 } 
@@ -25,7 +26,7 @@ module.exports = cds.service.impl(
                 else if(m.store.storage > 70){
                     m.store.criticality = 3;
                 }
-                await UPDATE(this.entities.mail,m.mail.ID).with({critification: m.mail.critification});
+                
                 await UPDATE(this.entities.store,m.store.ID).with({criticality: m.store.criticality});
             });
             
@@ -44,6 +45,12 @@ module.exports = cds.service.impl(
             }
             
            await UPDATE(this.entities.mail,tempmail.mail.ID).with({status: cur});//更新数据
+        });
+
+        this.on('newStorage','master', async (req) => {
+            let tempstore=masters[0];
+            
+            await UPDATE(this.entities.store,tempstore.store.ID).with({storage: req.data.storage});
         });
     }
 );
