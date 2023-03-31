@@ -6,17 +6,24 @@
     <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
         <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
     </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/HTML5.xml">
+        <edmx:Include Alias="HTML5" Namespace="com.sap.vocabularies.HTML5.v1"/>
+    </edmx:Reference>
     <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
         <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
     </edmx:Reference>
     <edmx:DataServices>
-        <Schema Namespace="StoreService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Schema Namespace="storeService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
             <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Store" EntityType="StoreService.Store">
-                    <NavigationPropertyBinding Path="SiblingEntity" Target="Store"/>
+                <EntitySet Name="store" EntityType="storeService.store">
+                    <NavigationPropertyBinding Path="changeLog2" Target="changeLog2"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="store"/>
+                </EntitySet>
+                <EntitySet Name="changeLog2" EntityType="storeService.changeLog2">
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="changeLog2"/>
                 </EntitySet>
             </EntityContainer>
-            <EntityType Name="Store">
+            <EntityType Name="store">
                 <Key>
                     <PropertyRef Name="ID"/>
                     <PropertyRef Name="IsActiveEntity"/>
@@ -29,11 +36,34 @@
                 <Property Name="category" Type="Edm.String"/>
                 <Property Name="name" Type="Edm.String"/>
                 <Property Name="storage" Type="Edm.Int32"/>
+                <Property Name="criticality" Type="Edm.Int32"/>
+                <NavigationProperty Name="changeLog2" Type="Collection(storeService.changeLog2)"/>
                 <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
                 <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
                 <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
-                <NavigationProperty Name="DraftAdministrativeData" Type="StoreService.DraftAdministrativeData" ContainsTarget="true"/>
-                <NavigationProperty Name="SiblingEntity" Type="StoreService.Store"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="storeService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="storeService.store"/>
+            </EntityType>
+            <EntityType Name="changeLog2">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.String" Nullable="false"/>
+                <Property Name="attribute" Type="Edm.String"/>
+                <Property Name="action" Type="Edm.String"/>
+                <Property Name="oldvalue" Type="Edm.Int32"/>
+                <Property Name="newvalue" Type="Edm.Int32"/>
+                <Property Name="datatime" Type="Edm.Int32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="storeService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="storeService.changeLog2"/>
             </EntityType>
             <EntityType Name="DraftAdministrativeData">
                 <Key>
@@ -49,94 +79,402 @@
                 <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
             </EntityType>
             <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="StoreService.Store"/>
+                <Parameter Name="in" Type="storeService.store"/>
                 <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
-                <ReturnType Type="StoreService.Store"/>
+                <ReturnType Type="storeService.store"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="storeService.changeLog2"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="storeService.changeLog2"/>
             </Action>
             <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="StoreService.Store"/>
-                <ReturnType Type="StoreService.Store"/>
+                <Parameter Name="in" Type="storeService.store"/>
+                <ReturnType Type="storeService.store"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="storeService.changeLog2"/>
+                <ReturnType Type="storeService.changeLog2"/>
             </Action>
             <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
-                <Parameter Name="in" Type="StoreService.Store"/>
+                <Parameter Name="in" Type="storeService.store"/>
                 <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
-                <ReturnType Type="StoreService.Store"/>
+                <ReturnType Type="storeService.store"/>
             </Action>
-            <Annotations Target="StoreService.EntityContainer/Store">
-                <Annotation Term="Common.DraftRoot">
-                    <Record Type="Common.DraftRootType">
-                        <PropertyValue Property="ActivationAction" String="StoreService.draftActivate"/>
-                        <PropertyValue Property="EditAction" String="StoreService.draftEdit"/>
-                        <PropertyValue Property="PreparationAction" String="StoreService.draftPrepare"/>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="storeService.changeLog2"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="storeService.changeLog2"/>
+            </Action>
+            <Annotations Target="storeService.store">
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="Store"/>
+                        <PropertyValue Property="TypeNamePlural" String="Store items"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="category"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="name"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>category</PropertyPath>
+                        <PropertyPath>name</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ID"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="category"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                            <Annotation Term="HTML5.CssDefaults">
+                                <Record Type="HTML5.CssDefaultsType">
+                                    <PropertyValue Property="width" String="auto"/>
+                                </Record>
+                            </Annotation>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="storage"/>
+                            <PropertyValue Property="Criticality" Path="criticality"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.HeaderFacets">
+                    <Collection>
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#HeaderAdminData"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Status"/>
+                            <PropertyValue Property="Label" String="Storage Capacity"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="HeaderAdminData">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="createdAt"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="createdBy"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="modifiedAt"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="modifiedBy"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Status">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="storage"/>
+                                    <PropertyValue Property="Criticality" Path="criticality"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="detailed information"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="ChangeLog"/>
+                            <PropertyValue Property="Target" AnnotationPath="changeLog2/@UI.PresentationVariant"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Main">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="category"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="name"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="storage"/>
+                                    <PropertyValue Property="Criticality" Path="criticality"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
             </Annotations>
-            <Annotations Target="StoreService.Store/createdAt">
+            <Annotations Target="storeService.EntityContainer/store">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="storeService.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="storeService.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="storeService.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="storeService.store/createdAt">
                 <Annotation Term="UI.HiddenFilter" Bool="true"/>
                 <Annotation Term="Core.Immutable" Bool="true"/>
                 <Annotation Term="Core.Computed" Bool="true"/>
                 <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
                 </Annotations>
-                <Annotations Target="StoreService.Store/createdBy">
+                <Annotations Target="storeService.store/createdBy">
                     <Annotation Term="UI.HiddenFilter" Bool="true"/>
                     <Annotation Term="Core.Immutable" Bool="true"/>
                     <Annotation Term="Core.Computed" Bool="true"/>
                     <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
                         <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
                         </Annotations>
-                        <Annotations Target="StoreService.Store/modifiedAt">
+                        <Annotations Target="storeService.store/modifiedAt">
                             <Annotation Term="UI.HiddenFilter" Bool="true"/>
                             <Annotation Term="Core.Computed" Bool="true"/>
                             <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
                             </Annotations>
-                            <Annotations Target="StoreService.Store/modifiedBy">
+                            <Annotations Target="storeService.store/modifiedBy">
                                 <Annotation Term="UI.HiddenFilter" Bool="true"/>
                                 <Annotation Term="Core.Computed" Bool="true"/>
                                 <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
                                     <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
                                     </Annotations>
-                                    <Annotations Target="StoreService.Store/IsActiveEntity">
+                                    <Annotations Target="storeService.store/ID">
+                                        <Annotation Term="Common.Label" String="ID"/>
+                                    </Annotations>
+                                    <Annotations Target="storeService.store/category">
+                                        <Annotation Term="Common.Label" String="Category"/>
+                                    </Annotations>
+                                    <Annotations Target="storeService.store/name">
+                                        <Annotation Term="Common.Label" String="Name"/>
+                                    </Annotations>
+                                    <Annotations Target="storeService.store/storage">
+                                        <Annotation Term="Common.Label" String="Storage"/>
+                                    </Annotations>
+                                    <Annotations Target="storeService.store/IsActiveEntity">
                                         <Annotation Term="UI.Hidden" Bool="true"/>
                                     </Annotations>
-                                    <Annotations Target="StoreService.Store/HasActiveEntity">
+                                    <Annotations Target="storeService.store/HasActiveEntity">
                                         <Annotation Term="UI.Hidden" Bool="true"/>
                                     </Annotations>
-                                    <Annotations Target="StoreService.Store/HasDraftEntity">
+                                    <Annotations Target="storeService.store/HasDraftEntity">
                                         <Annotation Term="UI.Hidden" Bool="true"/>
                                     </Annotations>
-                                    <Annotations Target="StoreService.Store/DraftAdministrativeData">
+                                    <Annotations Target="storeService.store/DraftAdministrativeData">
                                         <Annotation Term="UI.Hidden" Bool="true"/>
                                     </Annotations>
-                                    <Annotations Target="StoreService.DraftAdministrativeData">
-                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+                                    <Annotations Target="storeService.changeLog2">
+                                        <Annotation Term="UI.HeaderInfo">
+                                            <Record Type="UI.HeaderInfoType">
+                                                <PropertyValue Property="TypeName" String="ChangeLog"/>
+                                                <PropertyValue Property="TypeNamePlural" String="Items"/>
+                                            </Record>
+                                        </Annotation>
+                                        <Annotation Term="UI.LineItem">
+                                            <Collection>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="ID"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="attribute"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="action"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="oldvalue"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                                <Record Type="UI.DataField">
+                                                    <PropertyValue Property="Value" Path="newvalue"/>
+                                                    <Annotation Term="HTML5.CssDefaults">
+                                                        <Record Type="HTML5.CssDefaultsType">
+                                                            <PropertyValue Property="width" String="auto"/>
+                                                        </Record>
+                                                    </Annotation>
+                                                </Record>
+                                            </Collection>
+                                        </Annotation>
+                                        <Annotation Term="UI.PresentationVariant">
+                                            <Record Type="UI.PresentationVariantType">
+                                                <PropertyValue Property="SortOrder">
+                                                    <Collection>
+                                                        <Record Type="Common.SortOrderType">
+                                                            <PropertyValue Property="Property" PropertyPath="datatime"/>
+                                                            <PropertyValue Property="Descending" Bool="true"/>
+                                                        </Record>
+                                                    </Collection>
+                                                </PropertyValue>
+                                                <PropertyValue Property="Visualizations">
+                                                    <Collection>
+                                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                                    </Collection>
+                                                </PropertyValue>
+                                            </Record>
+                                        </Annotation>
+                                    </Annotations>
+                                    <Annotations Target="storeService.EntityContainer/changeLog2">
+                                        <Annotation Term="UI.PresentationVariant">
+                                            <Record Type="UI.PresentationVariantType">
+                                                <PropertyValue Property="SortOrder">
+                                                    <Collection>
+                                                        <Record Type="Common.SortOrderType">
+                                                            <PropertyValue Property="Property" PropertyPath="datatime"/>
+                                                            <PropertyValue Property="Descending" Bool="true"/>
+                                                        </Record>
+                                                    </Collection>
+                                                </PropertyValue>
+                                                <PropertyValue Property="Visualizations">
+                                                    <Collection>
+                                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                                    </Collection>
+                                                </PropertyValue>
+                                            </Record>
+                                        </Annotation>
+                                        <Annotation Term="Common.DraftRoot">
+                                            <Record Type="Common.DraftRootType">
+                                                <PropertyValue Property="ActivationAction" String="storeService.draftActivate"/>
+                                                <PropertyValue Property="EditAction" String="storeService.draftEdit"/>
+                                                <PropertyValue Property="PreparationAction" String="storeService.draftPrepare"/>
+                                            </Record>
+                                        </Annotation>
+                                    </Annotations>
+                                    <Annotations Target="storeService.changeLog2/createdAt">
+                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
                                         </Annotations>
-                                        <Annotations Target="StoreService.DraftAdministrativeData/DraftUUID">
-                                            <Annotation Term="UI.Hidden" Bool="true"/>
-                                            <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
-                                            </Annotations>
-                                            <Annotations Target="StoreService.DraftAdministrativeData/CreationDateTime">
-                                                <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+                                        <Annotations Target="storeService.changeLog2/createdBy">
+                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
                                                 </Annotations>
-                                                <Annotations Target="StoreService.DraftAdministrativeData/CreatedByUser">
-                                                    <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+                                                <Annotations Target="storeService.changeLog2/modifiedAt">
+                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
                                                     </Annotations>
-                                                    <Annotations Target="StoreService.DraftAdministrativeData/DraftIsCreatedByMe">
-                                                        <Annotation Term="UI.Hidden" Bool="true"/>
-                                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
-                                                        </Annotations>
-                                                        <Annotations Target="StoreService.DraftAdministrativeData/LastChangeDateTime">
-                                                            <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+                                                    <Annotations Target="storeService.changeLog2/modifiedBy">
+                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
                                                             </Annotations>
-                                                            <Annotations Target="StoreService.DraftAdministrativeData/LastChangedByUser">
-                                                                <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+                                                            <Annotations Target="storeService.changeLog2/ID">
+                                                                <Annotation Term="Common.Label" String="ID"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/attribute">
+                                                                <Annotation Term="Common.Label" String="Category"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/action">
+                                                                <Annotation Term="Common.Label" String="Name"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/oldvalue">
+                                                                <Annotation Term="Common.Label" String="OldValue"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/newvalue">
+                                                                <Annotation Term="Common.Label" String="Newalue"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/IsActiveEntity">
+                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/HasActiveEntity">
+                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/HasDraftEntity">
+                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.changeLog2/DraftAdministrativeData">
+                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                            </Annotations>
+                                                            <Annotations Target="storeService.DraftAdministrativeData">
+                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
                                                                 </Annotations>
-                                                                <Annotations Target="StoreService.DraftAdministrativeData/InProcessByUser">
-                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+                                                                <Annotations Target="storeService.DraftAdministrativeData/DraftUUID">
+                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
                                                                     </Annotations>
-                                                                    <Annotations Target="StoreService.DraftAdministrativeData/DraftIsProcessedByMe">
-                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
-                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+                                                                    <Annotations Target="storeService.DraftAdministrativeData/CreationDateTime">
+                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
                                                                         </Annotations>
-                                                                    </Schema>
-                                                                </edmx:DataServices>
-                                                            </edmx:Edmx>
+                                                                        <Annotations Target="storeService.DraftAdministrativeData/CreatedByUser">
+                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+                                                                            </Annotations>
+                                                                            <Annotations Target="storeService.DraftAdministrativeData/DraftIsCreatedByMe">
+                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="storeService.DraftAdministrativeData/LastChangeDateTime">
+                                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="storeService.DraftAdministrativeData/LastChangedByUser">
+                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+                                                                                        </Annotations>
+                                                                                        <Annotations Target="storeService.DraftAdministrativeData/InProcessByUser">
+                                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+                                                                                            </Annotations>
+                                                                                            <Annotations Target="storeService.DraftAdministrativeData/DraftIsProcessedByMe">
+                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+                                                                                                </Annotations>
+                                                                                            </Schema>
+                                                                                        </edmx:DataServices>
+                                                                                    </edmx:Edmx>

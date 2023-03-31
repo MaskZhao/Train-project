@@ -9,8 +9,8 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     return new ObjectPage(
         {
             appId: 'ns.store',
-            componentId: 'StoreObjectPage',
-            entitySet: 'Store'
+            componentId: 'storeObjectPage',
+            entitySet: 'store'
         },
         CustomPageDefinitions
     );

@@ -2,10 +2,10 @@ sap.ui.require(
     [
         'sap/fe/test/JourneyRunner',
         'ns/store/test/integration/FirstJourney',
-		'ns/store/test/integration/pages/StoreList',
-		'ns/store/test/integration/pages/StoreObjectPage'
+		'ns/store/test/integration/pages/storeList',
+		'ns/store/test/integration/pages/storeObjectPage'
     ],
-    function(JourneyRunner, opaJourney, StoreList, StoreObjectPage) {
+    function(JourneyRunner, opaJourney, storeList, storeObjectPage) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
             // start index.html in web folder
@@ -16,8 +16,8 @@ sap.ui.require(
         JourneyRunner.run(
             {
                 pages: { 
-					onTheStoreList: StoreList,
-					onTheStoreObjectPage: StoreObjectPage
+					onThestoreList: storeList,
+					onThestoreObjectPage: storeObjectPage
                 }
             },
             opaJourney.run

@@ -9,8 +9,8 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     return new ListReport(
         {
             appId: 'ns.store',
-            componentId: 'StoreList',
-            entitySet: 'Store'
+            componentId: 'storeList',
+            entitySet: 'store'
         },
         CustomPageDefinitions
     );

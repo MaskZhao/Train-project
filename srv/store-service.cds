@@ -1,5 +1,5 @@
 using { sap.ui.configurationstore as my } from '../db/configuration-store';
-@path: 'service/lunch'
+
 service storeService {
   entity store as projection on my.store;
     annotate store with @odata.draft.enabled;

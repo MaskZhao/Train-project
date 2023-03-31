@@ -1,9 +1,6 @@
 namespace sap.ui.masterstore;
 
-using {
-    managed,
-    Country
-} from '@sap/cds/common';
+using {managed} from '@sap/cds/common';
 
 using { 
     sap.ui.configurationstore.mail,
@@ -15,8 +12,8 @@ using {
 entity master : managed {
     key ID : String;
     name   : String;
-    mail   : Association to one mail;
-    changelog : Association to many changeLog on changelog.ID = ID;
+    mail   : Association to one mail ;
+    changeLog : Association to many changeLog on changeLog.master_ID = ID;
     store     : Association to one store;
     country   : Association to one mailCountry;
 };

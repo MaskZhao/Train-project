@@ -1,1 +1,1 @@
-using StoreService as service from '../../srv/store-service';
+using storeService as service from '../../srv/store-service';
