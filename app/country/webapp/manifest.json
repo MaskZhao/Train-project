@@ -1,7 +1,7 @@
 {
   "_version": "1.49.0",
   "sap.app": {
-    "id": "ns.master",
+    "id": "ns.country",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -13,7 +13,7 @@
     "sourceTemplate": {
       "id": "@sap/generator-fiori:lrop",
       "version": "1.9.2",
-      "toolsId": "66fc93ff-9b13-4581-b86b-084b7a8fcb89"
+      "toolsId": "602ece1b-1689-436a-a5f8-afa6d00fb819"
     },
     "dataSources": {
       "mainService": {
@@ -62,7 +62,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "ns.master.i18n.i18n"
+          "bundleName": "ns.country.i18n.i18n"
         }
       },
       "": {
@@ -88,49 +88,26 @@
       "routes": [
         {
           "pattern": ":?query:",
-          "name": "masterList",
-          "target": "masterList"
+          "name": "mailCountryList",
+          "target": "mailCountryList"
         },
         {
-          "pattern": "master({key}):?query:",
-          "name": "masterObjectPage",
-          "target": "masterObjectPage"
-        },
-        {
-          "pattern": "master({key})/country({key2}):?query:",
+          "pattern": "mailCountry({key}):?query:",
           "name": "mailCountryObjectPage",
           "target": "mailCountryObjectPage"
         }
       ],
       "targets": {
-        "masterList": {
+        "mailCountryList": {
           "type": "Component",
-          "id": "masterList",
+          "id": "mailCountryList",
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "entitySet": "master",
+              "entitySet": "mailCountry",
               "variantManagement": "Page",
               "navigation": {
-                "master": {
-                  "detail": {
-                    "route": "masterObjectPage"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "masterObjectPage": {
-          "type": "Component",
-          "id": "masterObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "options": {
-            "settings": {
-              "editableHeaderContent": false,
-              "entitySet": "master",
-              "navigation": {
-                "country": {
+                "mailCountry": {
                   "detail": {
                     "route": "mailCountryObjectPage"
                   }

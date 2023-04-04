@@ -27,15 +27,12 @@ service masterService {
                 grant : [ '*' ],
                 to : [ 'RiskManager' ]
             }
-        ])as projection on masters.mailCountry;
-    annotate mailCountry with @odata.draft.enabled ;
+        ])as projection on masters.mailCountry actions{
+            action Amount(amount : Integer);
+        };
+    //annotate mailCountry with @odata.draft.enabled ;
 
-    entity mail as projection on configuration.mail{
-        *
-    };
-    annotate mail with @odata.draft.enabled ;
-
-    entity changeLog @(restrict : [
+    entity mail @(restrict : [
             {
                 grant : [ 'READ' ],
                 to : [ 'RiskViewer' ]
@@ -44,8 +41,8 @@ service masterService {
                 grant : [ '*' ],
                 to : [ 'RiskManager' ]
             }
-        ])as projection on configuration.changeLog;
-    annotate changeLog with @odata.draft.enabled ;
+        ])as projection on configuration.mail;
+    annotate mail with @odata.draft.enabled ;
 
     entity store @(restrict : [
             {
@@ -56,12 +53,10 @@ service masterService {
                 grant : [ '*' ],
                 to : [ 'RiskManager' ]
             }
-        ])as projection on configuration.store{
-        *
-    };
+        ])as projection on configuration.store ;
     annotate store with @odata.draft.enabled;
 
-    entity changeLog2 @(restrict : [
+    entity description @(restrict : [
             {
                 grant : [ 'READ' ],
                 to : [ 'RiskViewer' ]
@@ -70,6 +65,6 @@ service masterService {
                 grant : [ '*' ],
                 to : [ 'RiskManager' ]
             }
-        ])as projection on configuration.changeLog2;
-    annotate changeLog2 with @odata.draft.enabled;
+        ])as projection on masters.description;
+    annotate description with @odata.draft.enabled ;
 }

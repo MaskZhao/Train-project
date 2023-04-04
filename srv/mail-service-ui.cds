@@ -8,15 +8,6 @@ annotate mailService.mail with{
     amount       @title : 'Amount';
 }
 
-annotate mailService.changeLog with{
-    ID           @title : 'Label';
-    name         @title : 'Name';
-    oldstatus    @title : 'OldStatus';
-    newstatus    @title : 'NewStatus';
-    changereason @title : 'ChangeReason';
-    reason_code  @title : 'Reason_Code';
-} ;
-
 annotate mailService.mail with @(
     Capabilities.DeleteRestrictions : {
         Deletable : true
@@ -153,20 +144,6 @@ annotate mailService.mail with @(
 };
 
 annotate mailService.changeLog with @(
-    Capabilities : {
-        DeleteRestrictions : {
-            $Type : 'Capabilities.DeleteRestrictionsType',
-            Deletable : true,
-        },
-        UpdateRestrictions : {
-            $Type : 'Capabilities.UpdateRestrictionsType',
-            Updatable : true,
-        },
-        InsertRestrictions : {
-            $Type : 'Capabilities.InsertRestrictionsType',
-            Insertable : true,
-        },
-    },
     UI :{
         LineItem  : [
             {Value : ID,
@@ -210,6 +187,11 @@ annotate mailService.changeLog with @(
         },
     },
 ){
-
+    ID           @title : 'Label';
+    name         @title : 'Name';
+    oldstatus    @title : 'OldStatus';
+    newstatus    @title : 'NewStatus';
+    changereason @title : 'ChangeReason';
+    reason_code  @title : 'Reason_Code';
 };
 

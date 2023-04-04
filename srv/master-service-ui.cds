@@ -1,6 +1,16 @@
 using { masterService } from './master-service';
 
-annotate masterService.mail with {
+annotate masterService.mail with @(
+    Capabilities.DeleteRestrictions : {
+        Deletable : true
+    },
+    Capabilities.UpdateRestrictions : {
+        Updatable : true
+    },
+    Capabilities.InsertRestrictions : {
+        Insertable : true
+    },
+){
     ID               @title : 'ID' @Common.FieldControl: #ReadOnly;
     name             @title : 'FoodName';
     status           @title : 'Status';
@@ -9,41 +19,30 @@ annotate masterService.mail with {
     amount           @title : 'Amount';
     @Common: {Text: receiver,}
     ID;
-
 };
 
-annotate masterService.store with {
+annotate masterService.store with @(
+    Capabilities.DeleteRestrictions : {
+        Deletable : true
+    },
+    Capabilities.UpdateRestrictions : {
+        Updatable : true
+    },
+    Capabilities.InsertRestrictions : {
+        Insertable : true
+    },
+){
     name     @title : 'Name';
     storage  @title : 'Storage';
     criticality @title : 'Criticality';
 
     @Common: {Text: category, }
     ID
-}
-
-annotate masterService.mailCountry with {
-    @Common: {Text: country, }
-    ID
-}
-
-
-annotate masterService.mail with @(
-    Capabilities.DeleteRestrictions : {
-        Deletable : false
-    },
-    Capabilities.UpdateRestrictions : {
-        Updatable : true
-    },
-    Capabilities.InsertRestrictions : {
-        Insertable : true
-    },
-){
-
 };
 
-annotate masterService.store with @(
+annotate masterService.mailCountry with @(
     Capabilities.DeleteRestrictions : {
-        Deletable : false
+        Deletable : true
     },
     Capabilities.UpdateRestrictions : {
         Updatable : true
@@ -51,16 +50,147 @@ annotate masterService.store with @(
     Capabilities.InsertRestrictions : {
         Insertable : true
     },
+    UI :{
+        Identification : [
+            {
+                $Type : 'UI.DataFieldForAction',
+                Label : 'Amount',
+                Action : 'masterService.Amount',
+                ![@UI.Importance] : #High,
+                Criticality : #Positive
+            },
+        ],
+         HeaderInfo  : {
+            $Type : 'UI.HeaderInfoType',
+            TypeName : 'Country',
+            TypeNamePlural : 'Items',
+            Title : {
+                $Type : 'UI.DataField',
+                Value : country,
+            },
+            Description : {
+                $Type : 'UI.DataField',
+                Value : country,
+            },
+        },
+        HeaderFacets  : [
+            {
+                $Type : 'UI.CollectionFacet',
+                Facets : [{
+                    $Type : 'UI.ReferenceFacet',
+                    Target : '@UI.FieldGroup#HeaderAdminData',
+                }],
+            },
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target : '@UI.FieldGroup#Amount',
+                Label  : 'Amount'
+            },
+        ],
+        SelectionFields  : [
+            country,
+        ],
+        LineItem  : [
+            {Value : country,
+            ![@HTML5.CssDefaults] : {width : 'auto'},
+            },
+            {Value : amount,
+            ![@HTML5.CssDefaults] : {width : 'auto'}
+            },
+        ],
+        PresentationVariant  : {
+            $Type : 'UI.PresentationVariantType',
+            SortOrder      : [{
+            Property   : amount,
+            Descending : false
+            }],
+            Visualizations : [
+                '@UI.LineItem',
+                '@Capabilities',
+                ]
+        },
+        Facets  : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Target : '@UI.FieldGroup#descr',
+                Label  : 'Description'
+            },
+        ],
+        FieldGroup #HeaderAdminData : {
+            $Type : 'UI.FieldGroupType',
+            Data : [
+                {Value : createdAt},
+                {Value : createdBy},
+                {Value : modifiedAt},
+                {Value : modifiedBy},
+            ]
+        },
+        FieldGroup #Amount : {
+            $Type : 'UI.FieldGroupType',
+            Data  : [
+                {
+                    Value: amount,
+                },
+            ],
+        },
+        FieldGroup #descr :{
+            $Type : 'UI.FieldGroupType',
+            Data  : [
+                {
+                    Value: descr_ID,
+                },
+            ],
+        },
+    },
 ){
+    @title       : 'Country'
+    @Common.Label: 'Country'
+    @mandatory
+    country;
 
+    @title       : 'Amount'
+    @Common.Label: 'Amount'
+    @mandatory
+    amount;
+
+    @title        : 'Descr'
+    @Common.Label : 'Description'
+    @Common       : {
+    Text                     : descr.descr,
+    TextArrangement          : #TextOnly,
+    ValueListWithFixedValues : true,
+    ValueList                : {
+      Label          : 'Description',
+      CollectionPath : 'description',
+      Parameters     : [
+        {
+          $Type             : 'Common.ValueListParameterInOut',
+          ValueListProperty : 'ID',
+          LocalDataProperty : descr_ID
+        },
+        {
+          $Type             : 'Common.ValueListParameterDisplayOnly',
+          ValueListProperty : 'descr'
+        }
+      ]
+    }
+  }
+  @mandatory
+  descr;
+};
+
+annotate masterService.mailCountry with actions {
+ Amount @(
+    Common.SideEffects.TargetProperties : ['in/amount'],
+);
 };
 
 annotate masterService.master with actions {
  nextStatus @(
-    Common.SideEffects.TargetEntities : ['in/mail'],
+    Common.SideEffects.TargetProperties : ['in/status','in/critification'],
 );
  newStorage @(
-    Common.SideEffects.TargetEntities : ['in/store'],
+    Common.SideEffects.TargetProperties : ['in/storage','in/criticality'],
 )
 };
 
@@ -68,7 +198,7 @@ annotate masterService.master with @(
     Capabilities : {
         InsertRestrictions.Insertable : true,
         UpdateRestrictions.Updatable  : true,
-        DeleteRestrictions.Deletable  : false,
+        DeleteRestrictions.Deletable  : true,
     },
 
     UI :{
@@ -117,9 +247,9 @@ annotate masterService.master with @(
             },
         ],
         SelectionFields  : [
+            name,
             mail_ID,
             store_ID,
-            country_ID,
         ],
 
         LineItem  : [
@@ -132,8 +262,8 @@ annotate masterService.master with @(
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
             {
-                Value : mail.status,
-                Criticality : mail.critification,
+                Value : status,
+                Criticality : critification,
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
             {
@@ -146,12 +276,8 @@ annotate masterService.master with @(
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
             {
-                Value : country_ID,
-                ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {
-                Value : store.storage,
-                Criticality : store.criticality ,
+                Value : storage,
+                Criticality : criticality ,
             },
             {Value : createdAt},
             {Value : createdBy},
@@ -171,18 +297,13 @@ annotate masterService.master with @(
             },
             {
                 $Type : 'UI.ReferenceFacet',
-                Target : '@UI.FieldGroup#Country',
+                Target : 'country/@UI.PresentationVariant',
                 Label : 'Country',
             },
             {
                 $Type : 'UI.ReferenceFacet',
                 Target : '@UI.FieldGroup#Store',
                 Label : 'Store',
-            },
-            {
-                $Type : 'UI.ReferenceFacet',
-                Label : 'ChangeLog',
-                Target : 'changeLog/@UI.PresentationVariant',
             },
         ],
         FieldGroup #Master : {
@@ -191,9 +312,7 @@ annotate masterService.master with @(
                 {Value : ID},
                 {Value : name},
                 {Value: mail_ID},
-                {Value: store_ID,
-                },
-                {Value: country_ID},
+                {Value: store_ID},
             ]
         },
         FieldGroup #HeaderAdminData : {
@@ -209,12 +328,12 @@ annotate masterService.master with @(
             $Type : 'UI.FieldGroupType',
             Data  : [
                 {
-                    Value: mail.status,
-                    Criticality:mail.critification,
+                    Value: status,
+                    Criticality:critification,
                 },
                 {
-                    Value : store.storage,
-                    Criticality : store.criticality,
+                    Value : storage,
+                    Criticality : criticality,
                 },
             ],
         },
@@ -230,8 +349,8 @@ annotate masterService.master with @(
                     ![@HTML5.CssDefaults] : {width : 'auto'},
                 },
                 {
-                    Value : mail.status,
-                    Criticality : mail.critification,
+                    Value : status,
+                    Criticality : critification,
                     ![@HTML5.CssDefaults] : {width : 'auto'},
                 },
                 {
@@ -239,20 +358,6 @@ annotate masterService.master with @(
                     ![@HTML5.CssDefaults] : {width : 'auto'},
                 },
             ],
-        },
-        FieldGroup #Country : {
-        $Type : 'UI.FieldGroupType',
-        Data  : [
-            {
-                Value : country.country,
-                ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {
-                Value : mail.status,
-                Criticality : mail.critification,
-                ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-        ],
         },
         FieldGroup #Store : {
         $Type : 'UI.FieldGroupType',
@@ -266,8 +371,8 @@ annotate masterService.master with @(
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
             {
-                Value : store.storage,
-                Criticality : store.criticality,
+                Value : storage,
+                Criticality : criticality,
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
         ],
@@ -284,31 +389,15 @@ annotate masterService.master with @(
     @mandatory
     name;
 
-    @title        : 'Country'
-    @Common.Label : 'Country'
-    @Common       : {
-    Text                     : country.country,
-    TextArrangement          : #TextOnly,
-    ValueListWithFixedValues : true,
-    ValueList                : {
-      Label          : 'Country',
-      CollectionPath : 'mailCountry',
-      Parameters     : [
-        {
-          $Type             : 'Common.ValueListParameterInOut',
-          ValueListProperty : 'ID',
-          LocalDataProperty : country_ID
-        },
-        {
-          $Type             : 'Common.ValueListParameterDisplayOnly',
-          ValueListProperty : 'country'
-        }
-      ]
-    }
-  }
-  @mandatory
-  country;
+    @title       : 'Status'
+    @Common.Label: 'Status'
+    @mandatory
+    status;
 
+    @title       : 'Storage'
+    @Common.Label: 'Storage'
+    @mandatory
+    storage;
 
     @title        : 'MAIL'
     @Common.Label : 'Receiver'
@@ -359,65 +448,4 @@ annotate masterService.master with @(
   }
   @mandatory
   store;
-};
-annotate masterService.changeLog with @(
-    Capabilities : {
-        DeleteRestrictions : {
-            $Type : 'Capabilities.DeleteRestrictionsType',
-            Deletable : false,
-        },
-        UpdateRestrictions : {
-            $Type : 'Capabilities.UpdateRestrictionsType',
-            Updatable : true,
-        },
-        InsertRestrictions : {
-            $Type : 'Capabilities.InsertRestrictionsType',
-            Insertable : true,
-        },
-    },
-    UI :{
-        LineItem  : [
-            {Value : ID,
-            ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {Value : name,
-            ![@HTML5.CssDefaults] : {width : 'auto'}
-            },
-            {Value : oldstatus,
-            ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {Value : newstatus,
-            ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {Value : changereason,
-            ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {Value : reason_code,
-            ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-        ],
-        PresentationVariant  : {
-            $Type : 'UI.PresentationVariantType',
-            SortOrder      : [{
-            Property   : reason_code,
-            Descending : true
-            }],
-            Visualizations : [
-                '@UI.LineItem',
-                '@Capabilities',
-                ]
-        },
-        HeaderInfo  : {
-            $Type : 'UI.HeaderInfoType',
-            TypeName : 'ChangeLog',
-            TypeNamePlural : 'Items',
-        },
-    },
-){
-    ID           @title : 'Label';
-    name         @title : 'Name';
-    oldstatus    @title : 'OldStatus';
-    newstatus    @title : 'NewStatus';
-    changereason @title : 'ChangeReason';
-    reason_code  @title : 'Reason_Code';
 };

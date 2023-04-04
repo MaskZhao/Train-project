@@ -28,7 +28,8 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-changelog": "cds watch --open changelog/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-master": "cds watch --open master/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-store": "cds watch --open store/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-store": "cds watch --open store/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-country": "cds watch --open country/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "main": "index.js",
   "author": "",
@@ -60,6 +61,8 @@
     "app/changelog",
     "app/changelog",
     "app/master",
-    "app/store"
+    "app/store",
+    "app/master",
+    "app/country"
   ]
 }

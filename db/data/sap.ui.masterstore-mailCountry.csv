@@ -1,12 +1,14 @@
-ID;country;
-d1;China;
-d2;United States;
-d3;France;
-f1;Germany;
-f3;Singapore;
-f4;United States;
-t2;United States;
-v2;Australia;
-v3;China;
-s2;China;
-s5;China;
+parent_ID;country;amount;descr_ID
+dd001;China;1;China
+dd001;United States;2;UnitedStates
+dd001;Germany;3;Germany
+dd002;United States;2;UnitedStates
+dd003;France;3;France
+ff001;Germany;4;Germany
+ff003;Singapore;5;Singapore
+ff004;United States;6;UnitedStates
+tt002;United States;7;UnitedStates
+vv002;Australia;8;Australia
+vv003;China;9;China
+ss002;China;6;China
+ss005;China;8;China
