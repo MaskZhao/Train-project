@@ -1,14 +1,21 @@
 namespace sap.ui.configurationstore;
 
 using { managed,cuid } from '@sap/cds/common';
+
+using { 
+    sap.ui.masterstore.master
+} from './master-store.cds';
+
 entity mail : managed {
-    key ID : String;
+    key ID : UUID;
+    label : String;
     name   : String;
     receiver : String;
     status : String;
     amount : Integer;
     critification: Integer;
-    changelog : Association to  many changeLog on changelog.mail= $self ;
+    master       :  Association to master;
+    changelog : Composition of many changeLog on changelog.mail= $self ;
 }
 
 entity changeLog : managed ,cuid {
@@ -25,15 +32,15 @@ entity store : managed {
     category    : String;
     name        : String;
     storage      : Integer;
-    criticality : Integer;
-    changeLog2 : Association to  many changeLog2 on changeLog2.attribute=category;
+    criticality  : Integer;
+    changeLog2   : Composition of many changeLog2 on changeLog2.store = $self;
   }
 
 entity changeLog2 : managed ,cuid{
+    store         : Association to  store;
     attribute    : String;
-    action        : String;
+    name          : String;
     oldvalue      : Integer;
     newvalue      : Integer;
     datatime      : Integer; 
-    store         :Association to one store on store.category=attribute;
   }

@@ -1,12 +1,13 @@
 const cds=require('@sap/cds');
-let Master;
-let masters;
-let mailCountry;
 class MasterService extends cds.ApplicationService{
     async init() {
         await super.init();
-        Master= this.entities.master;
-        mailCountry = this.entities.mailCountry;
+        const Master= this.entities.master;
+        const mailCountry = this.entities.mailCountry;
+
+        this.before('CREATE', Master, async (req) => this.beforeCreateMaster(req));
+        this.before('UPDATE', Master, async (req) => this.beforePatchMaster(req));
+
         this.after('READ', Master, async (masterData) => this.statusIcon(masterData));
         this.on('nextStatus',Master, async (req) => this.nextStatusIcon(req));  
         this.on('newStorage',Master, async (req) => this.newStorageIcon(req));  
@@ -14,7 +15,7 @@ class MasterService extends cds.ApplicationService{
     }
 
     async statusIcon(masterData){
-        masters = Array.isArray(masterData) ? masterData : [masterData];
+        let masters = Array.isArray(masterData) ? masterData : [masterData];
         masters.forEach(async m => {
             if (m.status === 'unshipped') {
                 m.critification = 1;
@@ -25,7 +26,7 @@ class MasterService extends cds.ApplicationService{
             }else {
                 m.critification = 3;
             }
-            await UPDATE(Master,m.ID).with({critification: m.critification});
+            await UPDATE(this.entities.master,m.ID).with({critification: m.critification});
         }),
         masters.forEach(async m => {
             if (m.storage <= 20) {
@@ -37,31 +38,40 @@ class MasterService extends cds.ApplicationService{
             else if(m.storage > 70){
                 m.criticality = 3;
             }
-            await UPDATE(Master,m.ID).with({criticality: m.criticality});
+            await UPDATE(this.entities.master,m.ID).with({criticality: m.criticality});
 
         });
 }
     async nextStatusIcon(req){
-        let tempmail=masters[0];
-        let cur=tempmail.status;
-        
-        if (tempmail.status === 'unshipped') {
-            cur = 'intransit';
-        } else if(tempmail.status==='intransit') {
-            cur = 'received';
+        let cur = await SELECT("*").from(this.entities.master).where({ID : req.params[0].ID});
+        let status=cur[0].status;
+        if (status === 'unshipped') {
+            status = 'intransit';
+        } else if(status==='intransit') {
+            status = 'received';
         }else {
-            cur = 'Done';
+            status = 'Done';
         }
-        
-        await UPDATE(Master,req.params[0].ID).with({status: cur});//更新数据
+        req.warn("Status changed as : " + String(status));
+        await UPDATE(this.entities.master,req.params[0].ID).with({status: status});//更新数据
     }
 
     async newStorageIcon(req){
-        await UPDATE(Master,req.params[0].ID).with({storage: req.data.storage});
+        req.warn("Storage changed as : " + String(req.data.storage));
+        await UPDATE(this.entities.master,req.params[0].ID).with({storage: req.data.storage});
     }
 
     async newAmountIcon(req){
-        await UPDATE(mailCountry,req.params[1].ID).with({amount: req.data.amount});
+        req.warn("Amount changed as : " + String(req.data.amount));
+        await UPDATE(this.entities.mailCountry,req.params[1].ID).with({amount: req.data.amount});
+    }
+
+    async beforeCreateMaster(req){
+        req.warn("Created at \n" + String(req.timestamp));
+    }
+
+    async beforePatchMaster(req){
+        req.warn("Modified at \n" + String(req.timestamp));
     }
 }
 module.exports = MasterService;

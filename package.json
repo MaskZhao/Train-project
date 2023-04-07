@@ -9,6 +9,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@npmcli/fs": "^3.1.0",
     "@sap/cds": "^6",
     "@sap/xssec": "^3",
     "express": "^4",
@@ -19,6 +20,9 @@
     "@sap/ux-specification": "^1.108.1",
     "rimraf": "^3.0.2",
     "sqlite3": "^5.1.6"
+  },
+  "engines": {
+    "node": "^16"
   },
   "scripts": {
     "start": "cds run",
@@ -49,6 +53,9 @@
       "[production]": {
         "db": {
           "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
         }
       },
       "auth": {

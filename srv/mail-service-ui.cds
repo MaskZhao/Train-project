@@ -1,13 +1,5 @@
 using { mailService } from './mail-service';
 
-annotate mailService.mail with{
-    ID           @title : 'Label';
-    name         @title : 'Name';
-    receiver     @title : 'Receiver';
-    status       @title : 'Status';
-    amount       @title : 'Amount';
-}
-
 annotate mailService.mail with @(
     Capabilities.DeleteRestrictions : {
         Deletable : true
@@ -22,9 +14,6 @@ annotate mailService.mail with @(
 
 annotate mailService.mail with actions {
  nextStatus @(
-//    Core.OperationAvailable : {
-//      $edmJson: { $Ne: [{ $Path: 'in/status'},'unshipped']}
-//    },
    Common.SideEffects.TargetProperties : ['in/status','in/critification'],
    ) };
 
@@ -47,7 +36,7 @@ annotate mailService.mail with @(
             TypeNamePlural : 'Mail',
             Title :{
                 $Type: 'UI.DataField',
-                Value: ID
+                Value: label
             },
             Description: {
                 $Type :'UI.DataField',
@@ -73,7 +62,7 @@ annotate mailService.mail with @(
             status
         ],
         LineItem  : [
-            {Value : ID,
+            {Value : label,
             ![@HTML5.CssDefaults] : {width : 'auto'},
             ![@UI.Importance] : #High
             },
@@ -112,7 +101,7 @@ annotate mailService.mail with @(
             $Type : 'UI.FieldGroupType',
             //Label : 'MailStatus',
             Data: [
-                {Value : ID},
+                {Value : label},
                 {Value: receiver},
                 {Value: status,
                  Criticality:critification
@@ -140,10 +129,19 @@ annotate mailService.mail with @(
         },
     },
 ){
-
+    label        @title : 'Label';
+    name         @title : 'Name';
+    receiver     @title : 'Receiver';
+    status       @title : 'Status';
+    amount       @title : 'Amount';
 };
 
 annotate mailService.changeLog with @(
+    Capabilities : {
+        InsertRestrictions.Insertable : false,
+        UpdateRestrictions.Updatable : false
+    },
+    
     UI :{
         LineItem  : [
             {Value : ID,

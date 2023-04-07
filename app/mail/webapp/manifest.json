@@ -22,7 +22,7 @@
                         "parameters": {},
                         "additionalParameters": "allowed"
                     },
-                    "semanticObject": "Risks",
+                    "semanticObject": "mail",
                     "action": "display"
                 }
             }

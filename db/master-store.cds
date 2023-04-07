@@ -10,7 +10,7 @@ using {
 entity master : managed {
     key ID : String;
     name   : String;
-    mail   : Association to one mail ;
+    mail   : Composition of many mail on mail.master = $self;
     store     : Association to one store;
     country   : Composition of many  mailCountry on country.parent = $self;
     status     :  String;

@@ -10,26 +10,73 @@ annotate masterService.mail with @(
     Capabilities.InsertRestrictions : {
         Insertable : true
     },
+    UI :{
+        HeaderInfo  : {
+            $Type : 'UI.HeaderInfoType',
+            TypeName : 'Mail',
+            TypeNamePlural : 'Mail',
+            Title :{
+                $Type: 'UI.DataField',
+                Value: label
+            },
+            Description: {
+                $Type :'UI.DataField',
+                Value: name
+            }
+        },
+        SelectionFields  : [
+            receiver,
+            status
+        ],
+        LineItem  : [
+            {Value : label,
+            ![@HTML5.CssDefaults] : {width : 'auto'},
+            },
+            {Value : name,
+            ![@HTML5.CssDefaults] : {width : 'auto'}
+            },
+            {Value : receiver,
+            ![@HTML5.CssDefaults] : {width : 'auto'}
+            },
+            {
+                Value : status,
+                Criticality : critification,
+                ![@HTML5.CssDefaults] : {width : 'auto'}
+            },
+            {Value : amount,
+            ![@HTML5.CssDefaults] : {width : 'auto'}
+            },
+        ],
+        PresentationVariant  : {
+            $Type : 'UI.PresentationVariantType',
+            SortOrder      : [{
+            Property   : amount,
+            Descending : true
+            }],
+            Visualizations : [
+                '@UI.LineItem',
+                '@Capabilities',
+                ]
+        },
+    },
 ){
-    ID               @title : 'ID' @Common.FieldControl: #ReadOnly;
+    label            @title : 'ID' ;
     name             @title : 'FoodName';
     status           @title : 'Status';
     receiver         @title : 'Receiver';
     critification    @title : 'Critification';
     amount           @title : 'Amount';
-    @Common: {Text: receiver,}
-    ID;
 };
 
 annotate masterService.store with @(
     Capabilities.DeleteRestrictions : {
-        Deletable : true
+        Deletable : false
     },
     Capabilities.UpdateRestrictions : {
-        Updatable : true
+        Updatable : false
     },
     Capabilities.InsertRestrictions : {
-        Insertable : true
+        Insertable : false
     },
 ){
     name     @title : 'Name';
@@ -54,7 +101,7 @@ annotate masterService.mailCountry with @(
         Identification : [
             {
                 $Type : 'UI.DataFieldForAction',
-                Label : 'Amount',
+                Label : 'New Amount',
                 Action : 'masterService.Amount',
                 ![@UI.Importance] : #High,
                 Criticality : #Positive
@@ -248,7 +295,6 @@ annotate masterService.master with @(
         ],
         SelectionFields  : [
             name,
-            mail_ID,
             store_ID,
         ],
 
@@ -264,11 +310,6 @@ annotate masterService.master with @(
             {
                 Value : status,
                 Criticality : critification,
-                ![@HTML5.CssDefaults] : {width : 'auto'},
-            },
-            {
-                Value : mail_ID,
-                Label : 'Receiver',
                 ![@HTML5.CssDefaults] : {width : 'auto'},
             },
             {
@@ -292,7 +333,7 @@ annotate masterService.master with @(
             },
             {
                 $Type : 'UI.ReferenceFacet',
-                Target : '@UI.FieldGroup#MailInfor',
+                Target : 'mail/@UI.PresentationVariant',
                 Label : 'MailInfor',
             },
             {
@@ -311,7 +352,6 @@ annotate masterService.master with @(
             Data: [
                 {Value : ID},
                 {Value : name},
-                {Value: mail_ID},
                 {Value: store_ID},
             ]
         },
@@ -334,28 +374,6 @@ annotate masterService.master with @(
                 {
                     Value : storage,
                     Criticality : criticality,
-                },
-            ],
-        },
-        FieldGroup #MailInfor : {
-            $Type : 'UI.FieldGroupType',
-            Data  : [
-                {
-                    Value : mail.name,
-                    ![@HTML5.CssDefaults] : {width : 'auto'},
-                },
-                {
-                    Value : mail.receiver,
-                    ![@HTML5.CssDefaults] : {width : 'auto'},
-                },
-                {
-                    Value : status,
-                    Criticality : critification,
-                    ![@HTML5.CssDefaults] : {width : 'auto'},
-                },
-                {
-                    Value : mail.amount,
-                    ![@HTML5.CssDefaults] : {width : 'auto'},
                 },
             ],
         },
@@ -398,31 +416,6 @@ annotate masterService.master with @(
     @Common.Label: 'Storage'
     @mandatory
     storage;
-
-    @title        : 'MAIL'
-    @Common.Label : 'Receiver'
-    @Common       : {
-    Text                     : mail.receiver,
-    TextArrangement          : #TextOnly,
-    ValueListWithFixedValues : true,
-    ValueList                : {
-      Label          : 'MAIL',
-      CollectionPath : 'mail',
-      Parameters     : [
-        {
-          $Type             : 'Common.ValueListParameterOut',
-          ValueListProperty : 'ID',
-          LocalDataProperty : mail_ID
-        },
-        {
-          $Type             : 'Common.ValueListParameterDisplayOnly',
-          ValueListProperty : 'receiver'
-        }
-      ]
-    }
-  }
-  @mandatory
-  mail;
 
     @title        : 'STORE'
     @Common.Label : 'Category'

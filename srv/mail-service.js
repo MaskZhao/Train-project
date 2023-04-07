@@ -1,18 +1,17 @@
 const cds=require('@sap/cds');
-let Mail;
-let mails;
 class MailService extends cds.ApplicationService{
     async init() {
         await super.init();
         //const db = await cds.connect.to('db');
-        Mail= this.entities.mail;
+        const Mail= this.entities.mail;
+        this.before('UPDATE', Mail, async (req) => this.beforePatchMail(req));
         this.after('READ', Mail, async (mailData) => this.statusIcon(mailData));
         this.on('nextStatus',Mail, async (req) => this.nextStatusIcon(req));  
     }
 
     async statusIcon(mailData){
-    mails = Array.isArray(mailData) ? mailData : [mailData];
-    mails.forEach(m => {
+    let mails = Array.isArray(mailData) ? mailData : [mailData];
+    mails.forEach(async (m) => {
         if (m.status === 'unshipped') {
             m.critification = 1;
         } else if(m.status==='intransit') {
@@ -22,22 +21,25 @@ class MailService extends cds.ApplicationService{
         }else {
             m.critification = 3;
         }
+        await UPDATE(this.entities.mail,m.ID).with({critification: m.critification});
     });
 }
     async nextStatusIcon(req){
-        let tempmail=mails[0];
-        let cur=tempmail.status;
-        if(tempmail.ID === req.data.id){
-            if (tempmail.status === 'unshipped') {
-                cur = 'intransit';
-            } else if(tempmail.status==='intransit') {
-                cur = 'received';
-            }else {
-                cur = 'Done';
-            }
+        let cur = await SELECT("*").from(this.entities.mail).where({ID : req.params[0].ID});
+        let status=cur[0].status;
+        if (status === 'unshipped') {
+            status = 'intransit';
+        } else if(status==='intransit') {
+            status = 'received';
+        }else {
+            status = 'Done';
         }
-        await UPDATE(this.entities.mail,req.params[0].ID).with({status: cur});//更新数据
+        req.warn("Status changed as : " + String(status));
+        await UPDATE(this.entities.mail,req.params[0].ID).with({status: status});//更新数据
     }
 
+    async beforePatchMail(req){
+        req.warn("Modified at \n" + String(req.timestamp));
+    }
 }
 module.exports = MailService;

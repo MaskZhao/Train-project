@@ -1,24 +1,27 @@
 using storeService from './store-service';
 
-
-annotate storeService.store with {
-    ID       @title: 'ID';
-    category @title: 'Category';
-    name     @title: 'Name';
-    storage  @title: 'Storage';
-}
-
-annotate storeService.changeLog2 with {
-    ID        @title: 'ID';
-    attribute @title: 'Category';
-    action    @title: 'Name';
-    oldvalue  @title: 'OldValue';
-    newvalue  @title: 'Newalue';
-// datatime  @title: 'Datatime';
+annotate storeService.store with actions {
+ nextStatus @(
+   Common.SideEffects.TargetProperties : ['in/storage','in/criticality'],
+   ) 
 };
 
 annotate storeService.store with @(
+    Capabilities : {
+        InsertRestrictions.Insertable : true,
+        UpdateRestrictions.Updatable  : true,
+        DeleteRestrictions.Deletable  : true,
+    },
     UI: {
+    Identification : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Label : 'Balance Storage',
+            Action : 'storeService.nextStatus',
+            ![@UI.Importance] : #High,
+            Criticality : #Positive
+        }
+    ],
     HeaderInfo                 : {
         TypeName      : 'Store',
         TypeNamePlural: 'Store items',
@@ -97,7 +100,7 @@ annotate storeService.store with @(
             Target: 'changeLog2/@UI.PresentationVariant',
         }
     ],
-    FieldGroup #Main           : {Data: [
+    FieldGroup #Main    : {Data: [
         {Value: category},
         {Value: name, },
         {
@@ -105,9 +108,18 @@ annotate storeService.store with @(
             Criticality: criticality
         }
     ]}
-}, );
+}){
+    ID       @title: 'ID';
+    category @title: 'Category';
+    name     @title: 'Name';
+    storage  @title: 'Storage';
+};
 
 annotate storeService.changeLog2 with @(
+    Capabilities : {
+        InsertRestrictions.Insertable : false,
+        UpdateRestrictions.Updatable : false
+    },
     UI: {
     HeaderInfo         : {
         $Type         : 'UI.HeaderInfoType',
@@ -116,15 +128,11 @@ annotate storeService.changeLog2 with @(
     },
     LineItem           : [
         {
-            Value                : ID,
-            ![@HTML5.CssDefaults]: {width: 'auto'},
-        },
-        {
             Value                : attribute,
             ![@HTML5.CssDefaults]: {width: 'auto'}
         },
         {
-            Value                : action,
+            Value                : name,
             ![@HTML5.CssDefaults]: {width: 'auto'},
         },
         {
@@ -142,8 +150,14 @@ annotate storeService.changeLog2 with @(
             Property  : datatime,
             Descending: true
         }],
-        Visualizations: ['@UI.LineItem']
+        Visualizations: [
+            '@UI.LineItem',
+            '@Capabilities'
+        ]
     },
-}, ) {
-
+}) {
+    attribute  @title: 'Category';
+    name       @title: 'Name';
+    oldvalue   @title: 'OldValue';
+    newvalue   @title: 'Newalue';
 };

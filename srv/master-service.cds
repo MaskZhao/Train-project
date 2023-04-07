@@ -30,7 +30,6 @@ service masterService {
         ])as projection on masters.mailCountry actions{
             action Amount(amount : Integer);
         };
-    //annotate mailCountry with @odata.draft.enabled ;
 
     entity mail @(restrict : [
             {
@@ -42,7 +41,6 @@ service masterService {
                 to : [ 'RiskManager' ]
             }
         ])as projection on configuration.mail;
-    annotate mail with @odata.draft.enabled ;
 
     entity store @(restrict : [
             {

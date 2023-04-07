@@ -11,7 +11,7 @@ service mailService {
                 to : [ 'RiskManager' ]
             }
         ])as projection on my.mail actions{
-        action nextStatus(id : String);
+        action nextStatus();
     };
         annotate mail with @odata.draft.enabled ;
 
@@ -25,5 +25,4 @@ service mailService {
                 to : [ 'RiskManager' ]
             }
         ])as projection on my.changeLog;
-        annotate changeLog with @odata.draft.enabled ;
 }
