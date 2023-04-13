@@ -21,9 +21,10 @@ class MailService extends cds.ApplicationService{
         }else {
             m.critification = 3;
         }
-        await UPDATE(this.entities.mail,m.ID).with({critification: m.critification});
-    });
-}
+        //await UPDATE(this.entities.mail,m.ID).with({critification: m.critification});
+        await this.critificationUpdate(this.entities.mail,m.ID,m.critification);
+        });
+    }
     async nextStatusIcon(req){
         let cur = await SELECT("*").from(this.entities.mail).where({ID : req.params[0].ID});
         let status=cur[0].status;
@@ -34,12 +35,35 @@ class MailService extends cds.ApplicationService{
         }else {
             status = 'Done';
         }
-        req.warn("Status changed as : " + String(status));
-        await UPDATE(this.entities.mail,req.params[0].ID).with({status: status});//更新数据
+        await this.statusUpdate(this.entities.mail,req.params[0].ID,status);//更新数据
+        return req.warn("Status changed as : " + String(status));
     }
 
     async beforePatchMail(req){
-        req.warn("Modified at \n" + String(req.timestamp));
+        return req.warn("Modified at \n" + String(req.timestamp));
     }
+
+    async critificationUpdate(entity,id,value){
+        await UPDATE(entity,id).with({critification: value});
+    };
+
+    async statusUpdate(entity,id,value){
+        await UPDATE(entity,id).with({status: value});
+    }
+
+    // async selectinfo(req){
+    //     return  await SELECT("*").from(this.entities.mail).where({ID : req.params[0].ID});
+    //  }
+ 
+    //  async changeStatus(status){
+    //      if (status === 'unshipped') {
+    //          status = 'intransit';
+    //      } else if(status==='intransit') {
+    //          status = 'received';
+    //      }else {
+    //          status = 'Done';
+    //      }
+    //      return status;
+    //  }
 }
 module.exports = MailService;
